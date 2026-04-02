@@ -3,138 +3,166 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RepoStart | 开源仓库新手上手助手</title>
+    <title>RepoStart | 开源仓库上手路线图</title>
     <meta
       name="description"
-      content="3 分钟读懂一个 GitHub 开源仓库，找到你最稳的第一步。"
+      content="输入 GitHub 仓库链接，生成一份适合新手的开源参与路线图。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
     />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="page-noise" aria-hidden="true"></div>
+    <div class="paper-grain" aria-hidden="true"></div>
 
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">RS</div>
-        <div>
-          <p class="brand-name">RepoStart</p>
-          <p class="brand-sub">帮你闯进开源世界的第一站</p>
-        </div>
-      </div>
+      <a class="brand" href="#hero" aria-label="RepoStart">
+        <span class="brand-mark">RS</span>
+        <span class="brand-copy">
+          <strong>RepoStart</strong>
+          <small>Open source onboarding studio</small>
+        </span>
+      </a>
       <nav class="topnav">
-        <a href="#hero">首页</a>
-        <a href="#examples">Explore</a>
-        <a href="#report">结果页</a>
+        <a href="#intake">Analyze</a>
+        <a href="#explore">Explore</a>
+        <a href="#report">Report</a>
+        <a href="#history">My Plan</a>
       </nav>
     </header>
 
     <main>
       <section class="hero shell" id="hero">
         <div class="hero-copy">
-          <div class="eyebrow bubble">From README to First PR</div>
+          <p class="eyebrow">For first-time contributors</p>
           <h1>
-            3 分钟读懂一个开源仓库，
-            <span>找到你最稳的第一步。</span>
+            把一个陌生仓库，
+            <span>翻译成你能真正动手的第一步。</span>
           </h1>
           <p class="hero-text">
-            RepoStart 不是 README 总结器，也不是聊天壳。它会把“要不要参与、先读什么、先改哪里、怎样降低第一次
-            PR 被拒风险”整理成一份能动手的上手报告。
+            RepoStart 不是 README summarizer，也不是 AI 聊天壳。它会从真实
+            GitHub 仓库里抓取基础信息、README、issues 与根目录线索，整理成一份可执行的开源上手报告。
           </p>
-          <div class="hero-tags">
-            <span>先别急着改代码，先摸清这几个文件</span>
-            <span>这类 issue 看着简单，实际边界很容易扩散</span>
-            <span>第一次贡献，先赢一个小的</span>
+          <div class="hero-ribbons">
+            <span>先看哪些文件</span>
+            <span>本地怎么跑起来</span>
+            <span>哪些 issue 更适合你</span>
+            <span>第一次 PR 改什么最稳</span>
           </div>
         </div>
 
-        <aside class="hero-side">
-          <div class="panel note-panel">
-            <p class="panel-label">这不是普通 AI 工具站</p>
-            <div class="mini-note">
-              <h3>不是 README 摘要</h3>
-              <p>会告诉你先看哪几份文件，为什么从这里切更稳。</p>
-            </div>
-            <div class="mini-note">
-              <h3>不是泛泛 issue 推荐</h3>
-              <p>每个推荐点都要结合你的背景和第一步成本。</p>
-            </div>
-            <div class="mini-note">
-              <h3>不是聊天壳</h3>
-              <p>结果页是一份结构化行动报告，不是对话记录。</p>
-            </div>
+        <aside class="hero-aside">
+          <div class="hero-note panel">
+            <p class="panel-kicker">What makes it useful</p>
+            <ul class="note-list">
+              <li>支持输入真实 GitHub repo URL，优先走 GitHub REST API。</li>
+              <li>如果遇到 rate limit 或接口失败，会优雅降级到内置示例数据。</li>
+              <li>不同 persona / goal 会真正改变推荐路径、issue 筛选与 PR 行动清单。</li>
+            </ul>
+          </div>
+          <div class="hero-mini-grid">
+            <article class="mini-tile">
+              <span>3 min</span>
+              <p>先判断值不值得投入</p>
+            </article>
+            <article class="mini-tile">
+              <span>1st PR</span>
+              <p>给你一条更稳的切入路线</p>
+            </article>
           </div>
         </aside>
       </section>
 
-      <section class="shell input-section">
-        <div class="panel input-panel">
-          <div class="panel-head">
-            <p class="panel-label">开始分析</p>
-            <h2>把 GitHub 仓库链接丢进来，我们先替你把路看清。</h2>
-            <p>
-              直接先体验也可以。首版内置了几组示例仓库，方便你不用接 API
-              也能先把产品感做出来。
+      <section class="shell intake" id="intake">
+        <div class="intake-layout">
+          <section class="panel intake-panel">
+            <div class="panel-head">
+              <p class="panel-kicker">Start analysis</p>
+              <h2>把仓库链接丢进来，我们先替你看清地形。</h2>
+              <p>
+                支持 GitHub Pages 直接运行。首版会先尝试浏览器端请求 GitHub API，
+                再在前端生成结构化贡献建议。
+              </p>
+            </div>
+
+            <label class="field">
+              <span>GitHub 仓库链接</span>
+              <input
+                id="repo-url"
+                type="text"
+                value="https://github.com/adobe/react-spectrum"
+                placeholder="https://github.com/owner/repo"
+              />
+            </label>
+
+            <div class="inline-tools">
+              <button class="primary-btn" id="analyze-btn">开始分析这个仓库</button>
+              <button class="ghost-btn" id="copy-plan-btn" type="button">复制我的开源行动计划</button>
+            </div>
+
+            <div class="intake-meta">
+              <div>
+                <p class="small-label">你的背景</p>
+                <div class="choice-grid" id="persona-grid"></div>
+              </div>
+              <div>
+                <p class="small-label">你的目标</p>
+                <div class="choice-grid single" id="goal-grid"></div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="panel live-panel">
+            <div class="meta-strip">
+              <span class="live-dot" id="source-dot"></span>
+              <strong id="source-badge">等待分析</strong>
+            </div>
+            <h3 id="status-title">准备读取仓库</h3>
+            <p id="status-message">
+              输入一个 GitHub 仓库链接，或点击下方示例仓库直接体验。
             </p>
-          </div>
-
-          <div class="field">
-            <label for="repo-url">GitHub 仓库链接</label>
-            <input
-              id="repo-url"
-              type="text"
-              value="https://github.com/adobe/react-spectrum"
-              placeholder="https://github.com/adobe/react-spectrum"
-            />
-          </div>
-
-          <div class="quick-picks" id="quick-picks"></div>
-
-          <div class="split-grid">
-            <div>
-              <p class="sub-label">你的背景</p>
-              <div class="choice-grid" id="persona-grid"></div>
-            </div>
-            <div>
-              <p class="sub-label">你的目标</p>
-              <div class="choice-grid single" id="goal-grid"></div>
-            </div>
-          </div>
-
-          <button class="primary-btn" id="analyze-btn">开始分析这个仓库</button>
+            <div class="loading-stack" id="loading-stack"></div>
+            <div class="signal-list" id="signal-list"></div>
+          </aside>
         </div>
       </section>
 
-      <section class="shell examples-section" id="examples">
+      <section class="shell explore" id="explore">
         <div class="section-head">
-          <p class="eyebrow">试玩仓库</p>
-          <h2>先看看不同类型仓库会生成怎样的报告</h2>
-          <p>组件库、CLI、文档仓库、AI 工具和产品型 Web 应用都已经内置好了。</p>
+          <p class="eyebrow">Explore examples</p>
+          <h2>先点一个真实风格的示例仓库，直接看报告长什么样。</h2>
+          <p>示例仓库既是体验入口，也是 GitHub API 失败时的 fallback 基线。</p>
         </div>
         <div class="examples-grid" id="examples-grid"></div>
       </section>
 
       <section class="shell report-section" id="report">
         <div class="section-head">
-          <p class="eyebrow">分析结果页</p>
-          <h2>这不是聊天记录，而是一份你真能照着做的上手报告</h2>
-          <p>点击上面的按钮后，下面这些卡片会按你选择的仓库和背景切换内容。</p>
+          <p class="eyebrow">Structured report</p>
+          <h2>一份真的能照着做的开源上手报告</h2>
+          <p>不是聊天记录，而是按行动顺序排好的贡献路线。</p>
         </div>
 
-        <div class="report-grid">
-          <aside class="report-nav panel">
-            <p class="panel-label">报告导航</p>
-            <a href="#summary-card">01 仓库速览</a>
-            <a href="#understand-card">02 3 分钟读懂</a>
-            <a href="#path-card">03 推荐切入路径</a>
-            <a href="#setup-card">04 本地启动清单</a>
-            <a href="#issue-card">05 推荐贡献方向</a>
-            <a href="#pitfall-card">06 避坑提醒</a>
+        <div class="report-layout">
+          <aside class="panel report-sidebar">
+            <p class="panel-kicker">Report map</p>
+            <a href="#summary-card">仓库速览</a>
+            <a href="#understand-card">3 分钟读懂</a>
+            <a href="#path-card">推荐切入路径</a>
+            <a href="#setup-card">本地启动准备</a>
+            <a href="#issue-card">推荐 issue / 方向</a>
+            <a href="#pr-card">首次 PR 行动清单</a>
+            <a href="#pitfall-card">避坑提醒</a>
           </aside>
 
-          <div class="report-content">
+          <div class="report-main">
             <section class="panel summary-card" id="summary-card">
-              <div class="summary-main">
-                <p class="panel-label">仓库速览</p>
+              <div class="summary-head">
+                <p class="panel-kicker">Repository overview</p>
                 <h3 id="repo-name">adobe/react-spectrum</h3>
                 <p class="summary-tagline" id="repo-tagline"></p>
                 <p class="summary-text" id="repo-summary"></p>
@@ -142,54 +170,82 @@
               <div class="summary-stats" id="repo-stats"></div>
             </section>
 
-            <section class="panel" id="understand-card">
-              <p class="panel-label">3 分钟读懂</p>
-              <h3>先把仓库讲人话，再决定要不要投入</h3>
+            <section class="panel understand-card" id="understand-card">
+              <div class="card-head">
+                <p class="panel-kicker">3-minute brief</p>
+                <h3>先判断项目是什么，再决定你要不要投进去。</h3>
+              </div>
               <div class="understand-grid">
-                <div class="soft-card">
-                  <p class="mini-label">它解决什么问题</p>
+                <article class="soft-card">
+                  <p class="small-label">这个仓库在做什么</p>
                   <p id="understand-problem"></p>
-                </div>
-                <div class="soft-card">
-                  <p class="mini-label">它适合谁</p>
+                </article>
+                <article class="soft-card">
+                  <p class="small-label">你适不适合参与</p>
                   <p id="understand-users"></p>
-                </div>
-                <div class="soft-card">
-                  <p class="mini-label">核心模块</p>
+                </article>
+                <article class="soft-card">
+                  <p class="small-label">你应该先扫的模块</p>
                   <div class="chip-row" id="understand-modules"></div>
-                </div>
-                <div class="soft-card">
-                  <p class="mini-label">优先阅读的文件</p>
+                </article>
+                <article class="soft-card">
+                  <p class="small-label">优先阅读的文件</p>
                   <div class="stack-list" id="priority-files"></div>
-                </div>
+                </article>
               </div>
             </section>
 
-            <section class="panel" id="path-card">
-              <p class="panel-label">推荐切入路径</p>
-              <h3>按你的背景，给你一条更稳的切入路径</h3>
+            <section class="panel path-card-wrap" id="path-card">
+              <div class="card-head">
+                <p class="panel-kicker">Entry path</p>
+                <h3>按你的背景和目标，给你一条更稳的切入路线。</h3>
+              </div>
               <div class="path-grid" id="path-grid"></div>
             </section>
 
             <section class="panel" id="setup-card">
-              <p class="panel-label">本地启动与准备清单</p>
-              <h3>第一次卡住的地方，通常不是代码本身</h3>
+              <div class="card-head">
+                <p class="panel-kicker">Setup checklist</p>
+                <h3>第一次卡住，大多不是因为不会写代码。</h3>
+              </div>
               <div class="check-grid" id="check-grid"></div>
             </section>
 
             <section class="panel" id="issue-card">
-              <p class="panel-label">推荐贡献方向</p>
-              <h3>先选边界清晰、能估时长、容易说明清楚的点</h3>
+              <div class="card-head">
+                <p class="panel-kicker">Contribution directions</p>
+                <h3>优先选边界清楚、容易解释、适合第一次发起 PR 的切口。</h3>
+              </div>
               <div class="issue-list" id="issue-list"></div>
             </section>
 
+            <section class="panel" id="pr-card">
+              <div class="card-head">
+                <p class="panel-kicker">First PR action list</p>
+                <h3>把第一次贡献拆成一串更稳的小动作。</h3>
+              </div>
+              <div class="action-grid" id="action-grid"></div>
+              <div class="export-card" id="export-card"></div>
+            </section>
+
             <section class="panel" id="pitfall-card">
-              <p class="panel-label">避坑提醒</p>
-              <h3>这些提醒不是吓你，是帮你把第一次贡献的失败率压下来</h3>
+              <div class="card-head">
+                <p class="panel-kicker">Pitfalls</p>
+                <h3>这些提醒不是劝退，是帮你把第一次贡献的失败率压下来。</h3>
+              </div>
               <div class="pitfall-grid" id="pitfall-grid"></div>
             </section>
           </div>
         </div>
+      </section>
+
+      <section class="shell history-section" id="history">
+        <div class="section-head">
+          <p class="eyebrow">Saved plans</p>
+          <h2>最近分析记录</h2>
+          <p>保存在浏览器本地，方便你回头继续看某个仓库。</p>
+        </div>
+        <div class="history-grid" id="history-grid"></div>
       </section>
     </main>
 
