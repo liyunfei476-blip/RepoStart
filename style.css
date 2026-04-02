@@ -38,6 +38,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+span,
+strong,
+small,
+button,
+li,
+pre,
+input {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 a,
 button,
 input {
@@ -127,6 +145,7 @@ button {
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(32, 24, 20, 0.08);
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .hero {
@@ -150,8 +169,8 @@ button {
 .hero-copy h1 {
   margin: 16px 0 18px;
   font-family: "Instrument Serif", "Songti SC", serif;
-  font-size: clamp(3.5rem, 7vw, 6.5rem);
-  line-height: 0.92;
+  font-size: clamp(2.8rem, 5.2vw, 4.8rem);
+  line-height: 0.98;
   font-weight: 400;
   letter-spacing: -0.04em;
 }
@@ -159,7 +178,6 @@ button {
 .hero-copy h1 span {
   display: block;
   color: var(--accent-deep);
-  transform: translateX(0.08em);
 }
 
 .hero-text,
@@ -200,6 +218,8 @@ button {
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid rgba(32, 24, 20, 0.09);
   font-weight: 700;
+  max-width: 100%;
+  white-space: normal;
 }
 
 .panel,
@@ -215,6 +235,7 @@ button {
     linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 251, 244, 0.96)),
     var(--paper);
   box-shadow: var(--card-shadow);
+  min-width: 0;
 }
 
 .hero-note,
@@ -229,6 +250,7 @@ button {
 #pr-card,
 #pitfall-card {
   padding: 24px;
+  min-width: 0;
 }
 
 .hero-note::after,
@@ -447,6 +469,7 @@ button {
   border-radius: 16px;
   background: rgba(246, 239, 229, 0.78);
   border: 1px solid rgba(32, 24, 20, 0.08);
+  min-width: 0;
 }
 
 .loading-step span:first-child {
@@ -492,6 +515,7 @@ button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+  align-items: start;
 }
 
 .example-card,
@@ -505,24 +529,13 @@ button {
   cursor: pointer;
 }
 
-.example-card:nth-child(3n + 1),
-.pitfall-card:nth-child(3n + 2),
-.history-card:nth-child(3n + 3) {
-  transform: rotate(-1deg);
-}
-
-.example-card:nth-child(3n + 2),
-.pitfall-card:nth-child(3n + 1),
-.history-card:nth-child(3n + 1) {
-  transform: rotate(1deg);
-}
-
 .example-card h3,
 .path-card h4,
 .issue-item h4,
 .history-card h3 {
   margin: 10px 0 8px;
-  font-size: 1.4rem;
+  font-size: 1.28rem;
+  line-height: 1.2;
 }
 
 .report-layout {
@@ -552,12 +565,14 @@ button {
 .report-main {
   display: grid;
   gap: 20px;
+  min-width: 0;
 }
 
 .summary-card {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
   gap: 20px;
+  min-width: 0;
 }
 
 .summary-stats,
@@ -578,6 +593,7 @@ button {
   padding: 18px;
   background: linear-gradient(180deg, rgba(245, 237, 226, 0.9), rgba(255, 255, 255, 0.82));
   border: 1px solid rgba(32, 24, 20, 0.1);
+  min-width: 0;
 }
 
 .stat-card strong {
@@ -691,6 +707,7 @@ button {
   justify-content: space-between;
   gap: 14px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .issue-meta {
@@ -711,6 +728,7 @@ button {
 .export-card pre {
   margin: 0;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .pitfall-card {
@@ -778,7 +796,7 @@ button {
   }
 
   .hero-copy h1 {
-    font-size: 3.2rem;
+    font-size: 2.5rem;
   }
 
   .hero-mini-grid,

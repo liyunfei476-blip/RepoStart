@@ -401,11 +401,16 @@ async function fetchJson(url) {
 
 async function fetchRepositoryData(owner, repo) {
   const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
-  const [repoData, readmeData, issuesData, contentsData] = await Promise.allSettled([
-    fetchJson(repoUrl),
-    fetchJson(`${repoUrl}/readme`),
-    fetchJson(`${repoUrl}/issues?state=open&per_page=12&sort=updated&direction=desc`),
-    fetchJson(`${repoUrl}/contents`),
+  const wrap = (promise) =>
+    promise
+      .then((value) => ({ status: "fulfilled", value }))
+      .catch((reason) => ({ status: "rejected", reason }));
+
+  const [repoData, readmeData, issuesData, contentsData] = await Promise.all([
+    wrap(fetchJson(repoUrl)),
+    wrap(fetchJson(`${repoUrl}/readme`)),
+    wrap(fetchJson(`${repoUrl}/issues?state=open&per_page=12&sort=updated&direction=desc`)),
+    wrap(fetchJson(`${repoUrl}/contents`)),
   ]);
 
   if (repoData.status !== "fulfilled") {
@@ -1098,10 +1103,10 @@ function statusText(status) {
 }
 
 function formatNumber(value) {
-  return Intl.NumberFormat("zh-CN", {
-    notation: value >= 1000 ? "compact" : "standard",
-    maximumFractionDigits: 1,
-  }).format(value || 0);
+  const numeric = Number(value || 0);
+  if (numeric >= 1000000) return `${(numeric / 1000000).toFixed(1).replace(/\.0$/, "")}m`;
+  if (numeric >= 1000) return `${(numeric / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+  return String(numeric);
 }
 
 function formatDate(value) {
@@ -1116,10 +1121,10 @@ function formatDate(value) {
 }
 
 function escapeHtml(text) {
-  return text
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function loadHistory() {
