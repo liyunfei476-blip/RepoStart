@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RepoStart | 开源仓库上手路线图</title>
+    <title>RepoStart | 开源仓库贡献起步台</title>
     <meta
       name="description"
-      content="输入 GitHub 仓库链接，生成一份适合新手的开源参与路线图。"
+      content="输入 GitHub 仓库链接，生成一份适合开源新手的贡献起步报告。"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,7 +24,7 @@
         <span class="brand-mark">RS</span>
         <span class="brand-copy">
           <strong>RepoStart</strong>
-          <small>Open source onboarding studio</small>
+          <small>Contribution starting desk</small>
         </span>
       </a>
       <nav class="topnav">
@@ -38,14 +38,14 @@
     <main>
       <section class="hero shell" id="hero">
         <div class="hero-copy">
-          <p class="eyebrow">For first-time contributors</p>
+          <p class="eyebrow">Editorial onboarding for open source</p>
           <h1>
-            把一个陌生仓库，
-            <span>翻译成你能真正动手的第一步。</span>
+            第一次看一个仓库，
+            <span>也能很快知道从哪里开始。</span>
           </h1>
           <p class="hero-text">
-            RepoStart 不是 README summarizer，也不是 AI 聊天壳。它会从真实
-            GitHub 仓库里抓取基础信息、README、issues 与根目录线索，整理成一份可执行的开源上手报告。
+            RepoStart 会把一个陌生 GitHub 仓库整理成更容易上手的贡献地图：
+            这个项目在做什么、你适不适合参与、先读哪些文件、第一次 PR 从哪里切最稳。
           </p>
           <div class="hero-ribbons">
             <span>先看哪些文件</span>
@@ -57,21 +57,21 @@
 
         <aside class="hero-aside">
           <div class="hero-note panel">
-            <p class="panel-kicker">What makes it useful</p>
+            <p class="panel-kicker">What it answers</p>
             <ul class="note-list">
-              <li>支持输入真实 GitHub repo URL，优先走 GitHub REST API。</li>
-              <li>如果遇到 rate limit 或接口失败，会优雅降级到内置示例数据。</li>
-              <li>不同 persona / goal 会真正改变推荐路径、issue 筛选与 PR 行动清单。</li>
+              <li>这个仓库到底是干什么的。</li>
+              <li>我现在适不适合参与，还是先别急着下场。</li>
+              <li>第一次贡献应该从哪些文件、哪些 issue 或哪类小改动开始。</li>
             </ul>
           </div>
           <div class="hero-mini-grid">
             <article class="mini-tile">
               <span>3 min</span>
-              <p>先判断值不值得投入</p>
+              <p>先读懂项目，不先冲代码</p>
             </article>
             <article class="mini-tile">
               <span>1st PR</span>
-              <p>给你一条更稳的切入路线</p>
+              <p>把第一次贡献拆成更稳的小动作</p>
             </article>
           </div>
         </aside>
@@ -82,10 +82,10 @@
           <section class="panel intake-panel">
             <div class="panel-head">
               <p class="panel-kicker">Start analysis</p>
-              <h2>把仓库链接丢进来，我们先替你看清地形。</h2>
+              <h2>把仓库链接贴进来，我们先替你读一遍地形。</h2>
               <p>
-                支持 GitHub Pages 直接运行。首版会先尝试浏览器端请求 GitHub API，
-                再在前端生成结构化贡献建议。
+                这是一个纯静态的 GitHub Pages 原型。会先在前端读取 GitHub API，
+                再生成适合新手的结构化贡献建议。
               </p>
             </div>
 
@@ -134,8 +134,8 @@
       <section class="shell explore" id="explore">
         <div class="section-head">
           <p class="eyebrow">Explore examples</p>
-          <h2>先点一个真实风格的示例仓库，直接看报告长什么样。</h2>
-          <p>示例仓库既是体验入口，也是 GitHub API 失败时的 fallback 基线。</p>
+          <h2>先点一个示例仓库，直接体验这份报告会怎么展开。</h2>
+          <p>示例仓库也是 fallback 基线，确保 API 失败时页面不会空掉。</p>
         </div>
         <div class="examples-grid" id="examples-grid"></div>
       </section>
@@ -143,8 +143,8 @@
       <section class="shell report-section" id="report">
         <div class="section-head">
           <p class="eyebrow">Structured report</p>
-          <h2>一份真的能照着做的开源上手报告</h2>
-          <p>不是聊天记录，而是按行动顺序排好的贡献路线。</p>
+          <h2>不是聊天记录，而是一份可以照着走的贡献起步报告。</h2>
+          <p>先读懂，再判断，再选择切口，最后才是第一次提交。</p>
         </div>
 
         <div class="report-layout">
