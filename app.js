@@ -242,6 +242,7 @@ const state = {
   selectedGoal: "first-pr",
   currentAnalysis: null,
   currentExportText: "",
+  isAnalyzing: false,
 };
 
 function $(id) {
@@ -325,7 +326,7 @@ function renderChoiceControls() {
       const sample = sampleRepos.find((item) => item.slug === card.dataset.sample);
       if (!sample) return;
       $("repo-url").value = sample.url;
-      analyzeRepository(sample.url, { forceSample: true });
+      analyzeRepository(sample.url);
     });
   });
 }
@@ -355,14 +356,55 @@ function setStatus(mode, title, message, signals = []) {
     .join("");
 }
 
+function setEvidence(readmeText, issueItems = [], diagnostics = []) {
+  $("readme-proof").textContent = readmeText || "当前还没有可展示的 README 片段。";
+  $("issue-proof").innerHTML = issueItems.length
+    ? issueItems.map((item) => `<span>${escapeHtml(item)}</span>`).join("")
+    : `<span>当前还没有命中的 issue 线索，可能是仓库 issue 很少，或 API 这次没有读到。</span>`;
+  $("api-proof").innerHTML = diagnostics.length
+    ? diagnostics.map((item) => `<span>${escapeHtml(item)}</span>`).join("")
+    : `<span>还没有 API 诊断信息。</span>`;
+}
+
+function setBusy(isBusy) {
+  state.isAnalyzing = isBusy;
+  $("analyze-btn").disabled = isBusy;
+  $("copy-plan-btn").disabled = isBusy;
+  $("analyze-btn").textContent = isBusy ? "正在分析仓库..." : "开始分析这个仓库";
+}
+
 function parseGitHubUrl(input) {
-  const text = input.trim();
-  const match = text.match(/github\.com\/([^/]+)\/([^/#?]+)/i);
+  const text = input.trim().replace(/^git@github\.com:/i, "https://github.com/");
+  if (!text) return null;
+
+  const clean = text
+    .replace(/\/+$/, "")
+    .replace(/\.git$/i, "")
+    .replace(/^https?:\/\/www\.github\.com/i, "https://github.com")
+    .replace(/^www\.github\.com/i, "github.com");
+
+  let match = clean.match(/^https?:\/\/github\.com\/([^/]+)\/([^/?#]+)(?:[/?#].*)?$/i);
+
+  if (!match) {
+    match = clean.match(/^github\.com\/([^/]+)\/([^/?#]+)(?:[/?#].*)?$/i);
+  }
+
+  if (!match) {
+    match = clean.match(/^([^/\s]+)\/([^/\s]+)$/);
+  }
+
   if (!match) return null;
+
+  const owner = match[1];
+  const repo = match[2];
+
+  if (!owner || !repo) return null;
+
   return {
-    owner: match[1],
-    repo: match[2].replace(/\.git$/, ""),
-    url: `https://github.com/${match[1]}/${match[2].replace(/\.git$/, "")}`,
+    owner,
+    repo,
+    slug: `${owner}/${repo}`,
+    url: `https://github.com/${owner}/${repo}`,
   };
 }
 
@@ -434,6 +476,12 @@ async function fetchRepositoryData(owner, repo) {
     readme,
     issues,
     rootFiles,
+    requested: {
+      repo: repoUrl,
+      readme: `${repoUrl}/readme`,
+      issues: `${repoUrl}/issues?state=open&per_page=12&sort=updated&direction=desc`,
+      contents: `${repoUrl}/contents`,
+    },
     warnings: [
       readmeData.status !== "fulfilled" ? "README 读取失败，已改用仓库基础信息补足。" : null,
       issuesData.status !== "fulfilled" ? "Issues 读取失败，推荐方向会更多基于仓库结构推断。" : null,
@@ -468,6 +516,7 @@ function normalizeRepositoryData(payload, source) {
     readmeText: payload.readme || "",
     issues: payload.issues || [],
     rootFiles: payload.rootFiles || [],
+    requested: payload.requested || null,
     source,
     warnings: payload.warnings || [],
   };
@@ -921,8 +970,44 @@ function buildAnalysis(rawData, persona, goal, meta = {}) {
     actions: buildActionList(rawData, persona, goal, issues),
     pitfalls: buildPitfalls(rawData, persona),
     exportText: buildExportText(rawData, persona, goal, summary, issues, files),
+    diagnostics: buildDiagnostics(rawData),
   };
   return analysis;
+}
+
+function buildDiagnostics(data) {
+  const items = [
+    `解析结果: ${data.fullName}`,
+    `数据来源: ${data.source === "live" ? "实时 GitHub API" : "fallback / mock"}`,
+    `默认分支: ${data.defaultBranch}`,
+  ];
+
+  if (data.requested) {
+    items.push("已请求 repo / readme / issues / contents 四个端点");
+  }
+
+  if (data.warnings && data.warnings.length) {
+    data.warnings.forEach((warning) => items.push(`注意: ${warning}`));
+  }
+
+  return items;
+}
+
+function buildReadmeProof(data) {
+  const sentence = extractReadmeSentences(data.readmeText)[0];
+  if (sentence) return sentence;
+  if (data.source === "mock") return "当前展示的是 fallback 数据，所以这里优先展示了内置仓库说明。";
+  return "这次没有拿到 README 正文，所以报告主要根据仓库基础信息和目录结构生成。";
+}
+
+function buildIssueProof(data) {
+  if (data.issues && data.issues.length) {
+    return data.issues.slice(0, 3).map((issue) => issue.title);
+  }
+  if (data.source === "mock") {
+    return ["当前没有实时 issue 数据，已退回到 fallback 建议路径。"];
+  }
+  return [];
 }
 
 function buildExportText(data, persona, goal, summary, issues, files) {
@@ -956,6 +1041,11 @@ function commitAnalysis(analysis, shouldPersist = true) {
   state.currentAnalysis = analysis;
   state.currentExportText = analysis.exportText;
   renderReport(analysis);
+  setEvidence(
+    buildReadmeProof(analysis.rawData),
+    buildIssueProof(analysis.rawData),
+    analysis.diagnostics,
+  );
   setStatus(
     analysis.rawData.source,
     analysis.rawData.source === "live" ? "已经生成实时报告" : "已切到 fallback 报告",
@@ -963,13 +1053,16 @@ function commitAnalysis(analysis, shouldPersist = true) {
       ? "GitHub API 已成功返回仓库数据，下面这份报告基于实时仓库信息和前端分析逻辑生成。"
       : "当前报告使用了内置 mock 或部分 fallback 数据，页面不会空掉，但建议你稍后再试一次实时分析。",
     [
+      analysis.repoName,
       `${formatNumber(analysis.rawData.stars)} stars`,
       analysis.rawData.language || "Mixed language",
       `${analysis.rawData.defaultBranch} branch`,
       `${formatNumber(analysis.rawData.openIssuesCount)} open issues`,
+      ...analysis.diagnostics.slice(0, 2),
     ],
   );
   renderLoading(loadingMessages.length, true);
+  setBusy(false);
 
   if (shouldPersist) {
     saveHistory(analysis);
@@ -990,6 +1083,7 @@ function renderReport(analysis) {
     ["Default branch", analysis.rawData.defaultBranch],
     ["Open issues", formatNumber(analysis.rawData.openIssuesCount)],
     ["Updated", formatDate(analysis.rawData.updatedAt)],
+    ["Source", analysis.rawData.source === "live" ? "Real-time API" : "Fallback data"],
   ]
     .map(
       ([label, value]) => `
@@ -1210,30 +1304,31 @@ async function copyPlan() {
 async function analyzeRepository(inputValue, options = {}) {
   const parsed = parseGitHubUrl(inputValue);
   if (!parsed) {
+    setBusy(false);
     renderLoading();
-    setStatus("error", "链接格式不对", "请输入标准 GitHub 仓库链接，例如 https://github.com/owner/repo");
+    setStatus(
+      "error",
+      "链接格式不对",
+      "请输入标准 GitHub 仓库链接，也支持 github.com/owner/repo 或 owner/repo。",
+    );
     return;
   }
 
+  setBusy(true);
   renderLoading(0);
   setStatus("live", "正在读取仓库", "先尝试走 GitHub API，如果失败会自动降级，不会让页面空掉。", [
-    parsed.owner,
-    parsed.repo,
+    parsed.slug,
+    parsed.url,
   ]);
 
   const matchedSample = getSampleByParsed(parsed);
 
   try {
     renderLoading(1);
-    const repositoryPayload = options.forceSample && matchedSample
-      ? matchedSample.fallback
-      : await fetchRepositoryData(parsed.owner, parsed.repo);
+    const repositoryPayload = await fetchRepositoryData(parsed.owner, parsed.repo);
 
     renderLoading(2);
-    const normalized = normalizeRepositoryData(
-      repositoryPayload,
-      options.forceSample ? "mock" : "live",
-    );
+    const normalized = normalizeRepositoryData(repositoryPayload, "live");
     renderLoading(3);
     const analysis = buildAnalysis(normalized, state.selectedPersona, state.selectedGoal, {
       warnings: normalized.warnings,
@@ -1312,6 +1407,11 @@ function bootstrap() {
   renderLoading();
   renderHistory();
   bindEvents();
+  setEvidence(
+    "分析完成后，这里会显示真实 README 片段或 fallback 说明。",
+    [],
+    ["等待输入 GitHub 仓库链接。"],
+  );
 
   const initialSample = sampleRepos[0];
   const initialData = normalizeRepositoryData(initialSample.fallback, "mock");
